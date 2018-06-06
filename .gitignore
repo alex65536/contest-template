@@ -1,0 +1,14 @@
+*
+!*.*
+!*/
+!Makefile
+problems/**/pretests/*.in
+problems/**/pretests/*.out
+problems/**/pretests/checker.*
+problems/**/tests/*.in
+problems/**/tests/*.out
+problems/**/tests/checker.*
+problems/**/gen-tests.target
+problems/**/solution.cpp
+statements/*.pdf
+problem-list.txt
