@@ -9,14 +9,14 @@ See `help/` subdirectory for some extra information.
 ## Dependencies
 
 Dependencies required to build the contest:
-    * Bash
-    * GNU Make
-    * GNU C
-    * GNU C++
-    * Free Pascal Compiler
-    * GNU M4
-    * latexmk
-    * jq
+    * Bash  
+    * GNU Make  
+    * GNU C  
+    * GNU C++  
+    * Free Pascal Compiler  
+    * GNU M4  
+    * latexmk  
+    * jq  
     * SSH (to use `make deploy` with a patched CMS)
 
 See also `help/dependencies.txt`.
