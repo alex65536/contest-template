@@ -1,0 +1,13 @@
+fields:
+    "name": Full problem name
+    "input": Input file (if empty, stdin)
+    "output": Output file (if empty, stdout)
+    "timeLimit": Time limit (in seconds)
+    "memoryLimit": Memory limit (in mbytes)
+    "scoreType": Type of scoring
+        * "subtask": Scoring by subtasks  
+            - "subtasks":
+              Has format [ [score1, test1], [score2, test2], ... ]
+              E.g.: [ [40, 2], [60, 2] ]
+        * "byTest": Scoring by tests
+            - "cost": Cost of single tests (e.g.: 5)

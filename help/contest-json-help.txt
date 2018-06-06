@@ -1,0 +1,10 @@
+"contest": Contest info
+    "name": Contest name
+    "description": Contest description
+    "date": Contest date
+    "location": Contest location
+    "tokenCount": Token mode (per problem)
+        * -1: Infinite tokens
+        * 0: No tokens
+        * <other integer>: Fixed number of tokens
+    "submissionCount": Number of submissions (per problem)

@@ -1,0 +1,10 @@
+{
+    "contest": {
+        "name": "Contest name",
+        "description": "Contest description",
+        "date": "Contest date",
+        "location": "Contest location",
+        "tokenCount": -1,
+        "submissionCount": 100
+    }
+}
