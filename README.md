@@ -9,6 +9,7 @@ See `help/` subdirectory for some extra information.
 ## Dependencies
 
 Dependencies required to build the contest:
+
     * Bash  
     * GNU Make  
     * GNU C  
