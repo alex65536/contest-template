@@ -1,10 +1,10 @@
-.PHONY: all build clean prepare
+.PHONY: all build clean prepare deploy
 
 DIRS := statements problems solutions
 DIRS_BUILD := $(DIRS:%=%-build)
 DIRS_CLEAN := $(DIRS:%=%-clean)
 
-all: build prepare deploy
+all: build prepare
 
 prepare:
 	./tools/prepare.sh

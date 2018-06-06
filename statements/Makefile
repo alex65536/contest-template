@@ -2,7 +2,7 @@
 
 all: build
 
-PROBLEMS := $(wildcard *.tex)
+PROBLEMS := $(shell ls *.tex | sort)
 PROBLEMS_NOEXT := $(PROBLEMS:%.tex=%)
 PROBLEMS_PDF := $(PROBLEMS:%.tex=%.pdf)
 
