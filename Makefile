@@ -1,4 +1,4 @@
-.PHONY: all build clean prepare deploy
+.PHONY: all build clean prepare
 
 DIRS := statements problems solutions
 DIRS_BUILD := $(DIRS:%=%-build)
