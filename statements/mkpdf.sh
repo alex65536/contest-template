@@ -21,7 +21,7 @@ echo "$INCLUDES"
 
 m4 -D_contestname="${CONTEST_NAME}" -D_contestdate="${CONTEST_DATE}" -D_contestlocation="${CONTEST_LOCATION}" -D_includes="${INCLUDES}" "${TEMPLATE_FILE}" >"${TMP_FILE}.tex"
 
-if latexmk -pdf "${TMP_FILE}.tex"; then
+if latexmk --pdflatex="pdflatex --file-line-error-style %O %S" -pdf "${TMP_FILE}.tex"; then
     mv -T "${TMP_FILE}.pdf" "${DEST_PDF}.pdf"
     ERROR=0
 else
