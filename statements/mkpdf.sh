@@ -21,9 +21,14 @@ echo "$INCLUDES"
 
 m4 -D_contestname="${CONTEST_NAME}" -D_contestdate="${CONTEST_DATE}" -D_contestlocation="${CONTEST_LOCATION}" -D_includes="${INCLUDES}" "${TEMPLATE_FILE}" >"${TMP_FILE}.tex"
 
-latexmk -pdf "${TMP_FILE}.tex" && (
+if latexmk -pdf "${TMP_FILE}.tex"; then
     mv -T "${TMP_FILE}.pdf" "${DEST_PDF}.pdf"
-    latexmk -c
-)
+    ERROR=0
+else
+    ERROR=$?
+fi
 
+latexmk -c
 rm -f "${TMP_FILE}.tex"
+
+exit $ERROR
