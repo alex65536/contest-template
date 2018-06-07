@@ -7,7 +7,7 @@ function runStress {
 	local TMPDIR="$(mktemp -d)"
 	
 	function finish {
-		cd / # Far away from removing directory
+		cd / # We move far away from the directory which we want to remove
 		echo "Del ${TMPDIR}"
 		rm -rf "${TMPDIR}"
 		exit 0
