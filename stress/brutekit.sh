@@ -8,7 +8,6 @@ function runStress {
 	
 	function finish {
 		cd / # We move far away from the directory which we want to remove
-		echo "Del ${TMPDIR}"
 		rm -rf "${TMPDIR}"
 		exit 0
 	}
