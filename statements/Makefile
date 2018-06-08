@@ -8,7 +8,7 @@ PROBLEMS_PDF := $(PROBLEMS:%.tex=%.pdf)
 
 build: contest.pdf $(PROBLEMS_PDF)
 
-%.pdf: %.tex $(wildcard ../images/%.png)
+%.pdf: %.tex $(wildcard ../images/%.png) ../contest.json
 	./mkpdf.sh $(@:%.pdf=%) $(@:%.pdf=%)
 
 contest.pdf: $(PROBLEMS) $(wildcard ../images/*)

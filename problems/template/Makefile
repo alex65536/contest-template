@@ -10,7 +10,7 @@ GENERATORS := $(GEN-SRC:%.cpp=%)
 CHECKER-SRC := $(wildcard checker.cpp)
 CHECKER := $(CHECKER-SRC:%.cpp=%)
 
-gen-tests.target: gen.sh genTests.sh solution validator $(CHECKER) $(GENERATORS)
+gen-tests.target: gen.sh genTests.sh solution validator $(CHECKER) $(GENERATORS) problem.json
 	./gen.sh
 	touch gen-tests.target
 

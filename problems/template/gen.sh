@@ -2,6 +2,8 @@
 
 TESTID=0
 
+jq . problem.json >/dev/null || exit
+
 SOL_INPUT="$(jq .problem.input problem.json -r)"
 SOL_OUTPUT="$(jq .problem.output problem.json -r)"
 
