@@ -1,6 +1,6 @@
 #!/bin/bash
 
-jq . problem.json >/dev/null || exit
+jq . ../contest.json >/dev/null || exit
 
 CONTEST_NAME="$(jq .contest.name ../contest.json -r)"
 CONTEST_DATE="$(jq .contest.date ../contest.json -r)"
