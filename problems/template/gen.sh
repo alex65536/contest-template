@@ -52,7 +52,7 @@ function makeGenTest {
 }
 
 function prepare {
-	rm -f ./*.in ./*.out ./checker.*
+	rm -f ./*.in ./*.out ./checker.* ./checker
 	stat --printf='' ../checker* &>/dev/null && cp ../checker* .
 	TESTID=0
 }
