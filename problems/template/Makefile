@@ -5,7 +5,8 @@ PROBLEM_NAME=$(notdir $(shell pwd))
 all: build
 build: gen-tests.target
 
-GENERATORS :=
+GEN-SRC := $(wildcard gen*.cpp)
+GENERATORS := $(GEN-SRC:%.cpp=%)
 CHECKER-SRC := $(wildcard checker.cpp)
 CHECKER := $(CHECKER-SRC:%.cpp=%)
 
