@@ -5,6 +5,11 @@
         "date": "Contest date",
         "location": "Contest location",
         "tokenCount": -1,
-        "submissionCount": 100
+        "submissionCount": 100,
+        "time": {
+            "start": "2018-06-12 09:00",
+            "length": 180
+        },
+        "mode": "running"
     }
 }
