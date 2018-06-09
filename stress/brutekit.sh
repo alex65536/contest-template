@@ -17,8 +17,9 @@ function runStress {
 	g++ --std=c++11 -O2 "../solutions/${TASK_NAME}.cpp" -o "${TMPDIR}/solution"
 	g++ --std=c++11 -O2 "../solutions/${NAIVE_NAME}.cpp" -o "${TMPDIR}/naive"
 	g++ --std=c++11 -O2 "../problems/${TASK_NAME}/${GEN_NAME}.cpp" -o "${TMPDIR}/gen"
+	g++ --std=c++14 -O2 "../problems/${TASK_NAME}/validator.cpp" -o "${TMPDIR}/validator"
 	if [[ -f "../problems/${TASK_NAME}/checker.cpp" ]]; then
-		g++ --std=c++11 -O2 "../problems/${TASK_NAME}/checker.cpp" -o "${TMPDIR}/checker"
+		g++ --std=c++14 -O2 "../problems/${TASK_NAME}/checker.cpp" -o "${TMPDIR}/checker"
 	fi
 	
 	function kompare {
@@ -43,6 +44,9 @@ function runStress {
 		./gen $(eval "echo ${GEN_PARM}") seed=${RANDOM}${RANDOM}${RANDOM} >input.txt
 		echo -e "\033[34;1mInput:\033[0m"
 		cat input.txt
+		if ! ./validator <input.txt; then
+			finish
+		fi
 		./naive
 		mv output.txt answer.txt
 		./solution
