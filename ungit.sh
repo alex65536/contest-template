@@ -8,7 +8,7 @@ rm -f README.md &&
 test -f LICENSE &&
 (
     echo "Here is the license for the contest template."
-    echo "It can be found at https://github.com/alex65536/contest-template."
+    echo "The template can be found at https://github.com/alex65536/contest-template."
     echo
     cat LICENSE
 ) > LICENSE.template &&
