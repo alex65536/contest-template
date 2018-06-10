@@ -4080,8 +4080,13 @@ void registerTestlibCmd(int argc, char* argv[])
     }
 
     inf.init(argv[1], _input);
+    #ifdef CMS
     ouf.init(argv[3], _output);
     ans.init(argv[2], _answer);
+    #else
+    ouf.init(argv[2], _output);
+    ans.init(argv[3], _answer);
+    #endif
 }
 
 void registerTestlib(int argc, ...)

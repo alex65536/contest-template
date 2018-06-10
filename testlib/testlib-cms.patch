@@ -1,9 +1,9 @@
-*** testlib.h.orig	2018-06-05 13:59:32.000000000 +0300
---- testlib.h	2018-06-05 21:39:30.164081688 +0300
+*** testlib.h.orig	2018-06-06 12:00:58.000000000 +0300
+--- testlib.h	2018-06-10 22:58:23.956062527 +0300
 ***************
 *** 36,51 ****
 --- 36,67 ----
-   * Permission to use or copy this software for any purpose is hereby granted
+   * Permission to use or copy this software for any purpose is hereby granted 
    * without fee, provided the above notices are retained on all copies.
    * Permission to modify the code and to distribute modified code is granted,
    * provided the above notices are retained, and a notice that the code was
@@ -33,7 +33,7 @@
    *     check.exe <Input_File> <Output_File> <Answer_File> [<Result_File> [-appes]],
    *   If result file is specified it will contain results.
    *
-   *   Validator, using testlib running format:
+   *   Validator, using testlib running format:                                          
    *     validator.exe < input.txt,
 ***************
 *** 2411,2426 ****
@@ -91,6 +91,7 @@
           errorName = "wrong answer ";
 ***************
 *** 4024,4041 ****
+--- 4075,4097 ----
           else
           {
               resultName = argv[4];
@@ -99,27 +100,13 @@
       }
   
       inf.init(argv[1], _input);
-!     ouf.init(argv[2], _output);
-!     ans.init(argv[3], _answer);
-  }
-  
-  void registerTestlib(int argc, ...)
-  {
-      if (argc  < 3 || argc > 5)
-          quit(_fail, std::string("Program must be run with the following arguments: ") +
-              "<input-file> <output-file> <answer-file> [<report-file> [<-appes>]]");
-  
---- 4075,4092 ----
-          else
-          {
-              resultName = argv[4];
-              appesMode = true;
-          }
-      }
-  
-      inf.init(argv[1], _input);
-!     ouf.init(argv[3], _output);
-!     ans.init(argv[2], _answer);
++     #ifdef CMS
++     ouf.init(argv[3], _output);
++     ans.init(argv[2], _answer);
++     #else
+      ouf.init(argv[2], _output);
+      ans.init(argv[3], _answer);
++     #endif
   }
   
   void registerTestlib(int argc, ...)
