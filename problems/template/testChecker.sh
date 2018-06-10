@@ -2,7 +2,12 @@
 
 . color.sh
 
-cd checkerTests || exit 1
+if ! [[ -f "./checker" ]]; then
+    echo "${S_BOLD}${S_RED}No checker found!${S_NONE}"
+    exit 1
+fi
+
+cd checkerTests || exit 2
 
 TESTID=0
 while :; do
