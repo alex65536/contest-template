@@ -1,6 +1,6 @@
 PROBLEM_NAME=$(notdir $(shell pwd))
 
-.PHONY: all build clean
+.PHONY: all build clean test
 
 all: build
 build: gen-tests.target
@@ -9,6 +9,9 @@ GEN-SRC := $(wildcard gen*.cpp)
 GENERATORS := $(GEN-SRC:%.cpp=%)
 CHECKER-SRC := $(wildcard checker.cpp)
 CHECKER := $(CHECKER-SRC:%.cpp=%)
+
+test: $(CHECKER)
+	./testChecker.sh
 
 gen-tests.target: gen.sh genTests.sh solution validator $(CHECKER) $(GENERATORS) problem.json
 	./gen.sh
