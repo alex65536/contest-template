@@ -55,7 +55,8 @@ function makeGenTest {
 
 function prepare {
 	rm -f ./*.in ./*.out ./checker.* ./checker
-	stat --printf='' ../checker* &>/dev/null && cp ../checker* .
+	stat --printf='' ../checker.* &>/dev/null && cp ../checker.* .
+	stat --printf='' ../checker   &>/dev/null && cp ../checker   .
 	TESTID=0
 }
 
