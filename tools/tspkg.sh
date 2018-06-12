@@ -10,6 +10,8 @@ trap 'rm -rf ${TMP_DIR}' EXIT SIGTERM SIGINT SIGQUIT
 	./tools/testerize.py "${PWD}/problems/${PROBLEM}"
 done) 42<problem-list.txt
 
+ln -sT "${PWD}/statements/contest.pdf" "${TMP_DIR}/contest.pdf"
+
 echo "Creating the archive"
 
 [[ -d "${PWD}/archives" ]] || mkdir "${PWD}/archives"
