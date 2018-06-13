@@ -14,12 +14,12 @@ function runStress {
 	
 	trap 'finish' SIGHUP SIGINT SIGQUIT SIGTERM
 	
-	g++ --std=c++11 -O2 "../solutions/${TASK_NAME}.cpp" -o "${TMPDIR}/solution"
-	g++ --std=c++11 -O2 "../solutions/${NAIVE_NAME}.cpp" -o "${TMPDIR}/naive"
-	g++ --std=c++11 -O2 "../problems/${TASK_NAME}/${GEN_NAME}.cpp" -o "${TMPDIR}/gen"
-	g++ --std=c++14 -O2 "../problems/${TASK_NAME}/validator.cpp" -o "${TMPDIR}/validator"
+	g++ --std=c++11 -O2 "../solutions/${TASK_NAME}.cpp" -o "${TMPDIR}/solution" || exit 1
+	g++ --std=c++11 -O2 "../solutions/${NAIVE_NAME}.cpp" -o "${TMPDIR}/naive" || exit 1
+	g++ --std=c++11 -O2 "../problems/${TASK_NAME}/${GEN_NAME}.cpp" -o "${TMPDIR}/gen" || exit 1
+	g++ --std=c++14 -O2 "../problems/${TASK_NAME}/validator.cpp" -o "${TMPDIR}/validator" || exit 1
 	if [[ -f "../problems/${TASK_NAME}/checker.cpp" ]]; then
-		g++ --std=c++14 -O2 "../problems/${TASK_NAME}/checker.cpp" -o "${TMPDIR}/checker"
+		g++ --std=c++14 -O2 "../problems/${TASK_NAME}/checker.cpp" -o "${TMPDIR}/checker" || exit 1
 	fi
 	
 	function kompare {
@@ -41,13 +41,14 @@ function runStress {
 	while :; do
 		: $((TESTID++))
 		echo -e "\033[33;1mTest ${TESTID}\033[0m"
-		./gen $(eval "echo ${GEN_PARM}") seed=${RANDOM}${RANDOM}${RANDOM} >input.txt
+		./gen $(eval "echo ${GEN_PARM}") seed=${RANDOM}${RANDOM}${RANDOM} >input.txt || finish
 		echo -e "\033[34;1mInput:\033[0m"
 		cat input.txt
-		if ! ./validator <input.txt; then
+		./validator <input.txt || finish
+		if ! ./naive; then
+			echo -e "\033[31;1mFAIL\033[0m"
 			finish
 		fi
-		./naive
 		mv output.txt answer.txt
 		./solution
 		if ! kompare input.txt output.txt answer.txt; then
