@@ -46,11 +46,14 @@ function runStress {
 		cat input.txt
 		./validator <input.txt || finish
 		if ! ./naive; then
-			echo -e "\033[31;1mFAIL\033[0m"
+			echo -e "\033[35;1mRE\033[0m (on naive)"
 			finish
 		fi
 		mv output.txt answer.txt
-		./solution
+		if ! ./solution; then
+			echo -e "\033[35;1mRE\033[0m"
+			finish
+		fi
 		if ! kompare input.txt output.txt answer.txt; then
 			echo -e "\033[31;1mWA\033[0m"
 			finish
