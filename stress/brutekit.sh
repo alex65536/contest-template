@@ -1,3 +1,7 @@
+# If zero, input is shown only on fail
+# If non-zero, input is shown each time
+SHOW_INPUT=1
+
 function runStress {
 	local TASK_NAME="$1"; shift
 	local NAIVE_NAME="$1"; shift
@@ -35,6 +39,11 @@ function runStress {
 		fi
 	}
 	
+	function showInput {
+		echo -e "\033[34;1mInput:\033[0m"
+		cat input.txt
+	}
+	
 	cd "${TMPDIR}"
 	
 	local TESTID=0
@@ -42,19 +51,24 @@ function runStress {
 		: $((TESTID++))
 		echo -e "\033[33;1mTest ${TESTID}\033[0m"
 		./gen $(eval "echo ${GEN_PARM}") seed=${RANDOM}${RANDOM}${RANDOM} >input.txt || finish
-		echo -e "\033[34;1mInput:\033[0m"
-		cat input.txt
-		./validator <input.txt || finish
+		[[ "${SHOW_INPUT}" == 0 ]] || showInput
+		if ! ./validator <input.txt; then
+			[[ "${SHOW_INPUT}" == 0 ]] && showInput
+			finish
+		fi
 		if ! ./naive; then
+			[[ "${SHOW_INPUT}" == 0 ]] && showInput
 			echo -e "\033[35;1mRE\033[0m (on naive)"
 			finish
 		fi
 		mv output.txt answer.txt
 		if ! ./solution; then
+			[[ "${SHOW_INPUT}" == 0 ]] && showInput
 			echo -e "\033[35;1mRE\033[0m"
 			finish
 		fi
 		if ! kompare input.txt output.txt answer.txt; then
+			[[ "${SHOW_INPUT}" == 0 ]] && showInput
 			echo -e "\033[31;1mWA\033[0m"
 			finish
 		fi
