@@ -1,4 +1,4 @@
-.PHONY: all build clean prepare deploy tspkg
+.PHONY: all build clean full-clean prepare deploy tspkg
 
 DIRS := statements problems solutions
 DIRS_BUILD := $(DIRS:%=%-build)
@@ -19,7 +19,12 @@ build: $(DIRS_BUILD)
 
 clean: $(DIRS_CLEAN)
 	rm -f problem-list.txt
+	find . -name "input.txt" -type f -delete
+	find . -name "output.txt" -type f -delete
+
+full-clean: clean
 	rm -f archives/*.zip
+	find . -name "props.json" -type f -delete
 
 .PHONY: $(DIRS_BUILD) $(DIRS_CLEAN)
 
