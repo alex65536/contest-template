@@ -11,7 +11,7 @@ def testerize(path):
     src_prob = json.loads(open(os.path.join(path, 'problem.json'), 'r').read())['problem']
     dst_prob = {}
     dst_prob['InputFile'] = 'stdin' if src_prob['input'] == '' else src_prob['input']
-    dst_prob['OutputFile'] = 'stdin' if src_prob['output'] == '' else src_prob['output']
+    dst_prob['OutputFile'] = 'stdout' if src_prob['output'] == '' else src_prob['output']
     dst_prob['TimeLimit'] = int(src_prob['timeLimit'] * 1000)
     dst_prob['MemoryLimit'] = int(src_prob['memoryLimit'] * 1024)
     dst_prob['StopAfterFirstFail'] = False
