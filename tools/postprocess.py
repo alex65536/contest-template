@@ -59,7 +59,7 @@ def process(verbose=3):
             testid += 1
             add_score = cost if res else 0
             if verbose > 1:
-                stderr.write('Test {}: {}/{} points\n'.format(
+                stderr.write('test {}: {}/{} points\n'.format(
                     testid, add_score, cost))
             score += add_score
             max_score += cost
@@ -71,23 +71,23 @@ def process(verbose=3):
             fail_reason = ''
             for i in range(subtask[1]):
                 if verbose > 3:
-                    stdout.write(' - Test {}: {}\n'.format(
+                    stdout.write(' - test {}: {}\n'.format(
                         testid+1, verdicts[testid]))
                 if not test_results[testid]:
                     accepted = False
                     if fail_reason == '':
-                        fail_reason = ' - Test {}: {}\n'.format(
+                        fail_reason = ' - test {}: {}\n'.format(
                             testid+1, verdicts[testid])
                 testid += 1
             cost = subtask[0]
             add_score = cost if accepted else 0
             if verbose > 1:
                 groupid += 1
-                stderr.write('Subtask {}: {}/{} points\n'.format(
+                stderr.write('subtask {}: {}/{} points\n'.format(
                     groupid, add_score, cost))
                 if verbose == 3:
                     if accepted:
-                        stderr.write(' - Passed :)\n')
+                        stderr.write(' - passed\n')
                     else:
                         stderr.write(fail_reason)
             score += add_score
@@ -99,7 +99,7 @@ def process(verbose=3):
         raise Exception('Unknown scoring type')
 
     if verbose > 0:
-        stderr.write('Total score: {}/{} points'.format(score, max_score))
+        stderr.write('total score: {}/{} points'.format(score, max_score))
 
     return score
 
