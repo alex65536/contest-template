@@ -30,15 +30,13 @@ function makeTest {
 	local IN_FILE="${TESTID}.in"
 	local OUT_FILE="${TESTID}.out"
 	cat >"${IN_FILE}"
-	../validator <"${IN_FILE}"
-	if [[ "$?" != 0 ]]; then
+	if ! ../validator <"${IN_FILE}"; then
 		echo "Validator error"
 		exit 3
 	fi
 	callSolution "${IN_FILE}" "${OUT_FILE}"
 	if [[ -e ../checker ]]; then
-		../checker "${IN_FILE}" "${OUT_FILE}" "${OUT_FILE}"
-		if [[ "$?" != 0 ]]; then
+		if ! ../checker "${IN_FILE}" "${OUT_FILE}" "${OUT_FILE}"; then
 			echo "Checker error"
 			exit 3
 		fi
