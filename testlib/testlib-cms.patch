@@ -1,5 +1,5 @@
-*** testlib.h.orig	2018-06-06 12:00:58.000000000 +0300
---- testlib.h	2018-06-10 22:58:23.956062527 +0300
+*** testlib.h.orig	2018-08-22 12:26:04.104893746 +0300
+--- testlib.h	2018-08-22 12:27:59.172759328 +0300
 ***************
 *** 36,51 ****
 --- 36,67 ----
@@ -36,8 +36,8 @@
    *   Validator, using testlib running format:                                          
    *     validator.exe < input.txt,
 ***************
-*** 2411,2426 ****
---- 2427,2477 ----
+*** 2463,2478 ****
+--- 2479,2536 ----
       {
           if (testlibMode != _interactor && !ouf.seekEof())
               quit(_dirt, "Extra information in the output file");
@@ -54,20 +54,27 @@
 +             tout.close();
 + 
 +         if (result == _ok) {
-+           std::fprintf(stdout, "1.0\n");
-+           std::fprintf(stderr, "OK\n");
++             std::fprintf(stdout, "1.0\n");
++             std::fprintf(stderr, "OK\n");
 +         } else if (result == _wa) {
-+           std::fprintf(stdout, "0.0\n");
-+           std::fprintf(stderr, "Wrong Answer\n");
++             std::fprintf(stdout, "0.0\n");
++             std::fprintf(stderr, "Wrong Answer\n");
 +         } else if (result == _pe) {
-+           std::fprintf(stdout, "0.0\n");
-+           std::fprintf(stderr, "Presentation Error\n");
++             std::fprintf(stdout, "0.0\n");
++             std::fprintf(stderr, "Presentation Error\n");
 +         } else if (result == _dirt) {
-+           std::fprintf(stdout, "0.0\n");
-+           std::fprintf(stderr, "Wrong Output Format\n");
++             std::fprintf(stdout, "0.0\n");
++             std::fprintf(stderr, "Wrong Output Format\n");
++         } else if (result == _points) {
++             std::fprintf(stdout, "%f\n", __testlib_points);
++             std::fprintf(stderr, "Partial Score\n");
 +         } else if (result == _unexpected_eof) {
-+           std::fprintf(stdout, "0.0\n");
-+           std::fprintf(stderr, "Wrong Output Format\n");
++             std::fprintf(stdout, "0.0\n");
++             std::fprintf(stderr, "Wrong Output Format\n");
++         } else if (result >= _partially) {
++             double score = (double)pctype / 200.0;
++             std::fprintf(stdout, "%.3f\n", score);
++             std::fprintf(stderr, "Partial Score\n");
 +         } else if (result == _fail) {
 +           std::fprintf(stdout, "0.0\n");
 +           std::fprintf(stderr, "FAILURE, CONTACT JURY, ERROR 1\n");
@@ -90,8 +97,8 @@
       case _wa:
           errorName = "wrong answer ";
 ***************
-*** 4024,4041 ****
---- 4075,4097 ----
+*** 4076,4093 ****
+--- 4134,4156 ----
           else
           {
               resultName = argv[4];

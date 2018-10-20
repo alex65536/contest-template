@@ -25,7 +25,7 @@
  * Copyright (c) 2005-2018
  */
 
-#define VERSION "0.9.18"
+#define VERSION "0.9.21"
 
 /* 
  * Mike Mirzayanov
@@ -63,6 +63,11 @@
  */
 
 const char* latestFeatures[] = {
+                          "Fixed stringstream repeated usage issue",
+                          "Fixed compilation in g++ (for std=c++03)",
+                          "Batch of println functions (support collections, iterator ranges)",
+                          "Introduced rnd.perm(size, first = 0) to generate a `first`-indexed permutation",
+                          "Allow any whitespace in readInts-like functions for non-validators",
                           "Ignore 4+ command line arguments ifdef EJUDGE",
                           "Speed up of vtos",
                           "Show line number in validators in case of incorrect format",
@@ -150,6 +155,7 @@ const char* latestFeatures[] = {
 #include <map>
 #include <set>
 #include <cmath>
+#include <iostream>
 #include <sstream>
 #include <fstream>
 #include <cstring>
@@ -169,6 +175,7 @@ const char* latestFeatures[] = {
 #   define ON_WINDOWS
 #   if defined(_MSC_VER) && _MSC_VER>1400
 #       pragma warning( disable : 4127 )
+#       pragma warning( disable : 4146 )
 #       pragma warning( disable : 4458 )
 #   endif
 #else
@@ -1003,6 +1010,26 @@ public:
             __testlib_fail("random_t::any(const Iter& begin, const Iter& end, int type): range must have positive length");
         return *(begin + wnext(size, type));
     }
+
+    template<typename T, typename E>
+    std::vector<E> perm(T size, E first)
+    {
+        if (size <= 0)
+            __testlib_fail("random_t::perm(T size, E first = 0): size must be positive");
+        std::vector<E> p(size);
+        for (T i = 0; i < size; i++)
+            p[i] = first + i;
+        if (size > 1)
+            for (T i = 1; i < size; i++)
+                std::swap(p[i], p[next(i + 1)]);
+        return p;
+    }
+
+    template<typename T>
+    std::vector<T> perm(T size)
+    {
+        return perm(size, T(0));
+    }
 };
 
 const int random_t::lim = 25;
@@ -1501,6 +1528,7 @@ private:
     std::FILE* file;
     std::string name;
     int line;
+    std::vector<int> undoChars;
 
     inline int postprocessGetc(int getcResult)
     {
@@ -1512,17 +1540,26 @@ private:
 
     int getc(FILE* file)
     {
-        int c = ::getc(file);
+        int c;
+        if (undoChars.empty())
+            c = ::getc(file);
+        else
+        {
+            c = undoChars.back();
+            undoChars.pop_back();
+        }
+
         if (c == LF)
             line++;
         return c;
     }
 
-    int ungetc(int c, FILE* file)
+    int ungetc(int c/*, FILE* file*/)
     {
         if (c == LF)
             line--;
-        return ::ungetc(c, file);
+        undoChars.push_back(c);
+        return c;
     }
 
 public:
@@ -1538,7 +1575,7 @@ public:
         else
         {
             int c = getc(file);
-            ungetc(c, file);
+            ungetc(c/*, file*/);
             return postprocessGetc(c);
         }
     }
@@ -1558,7 +1595,7 @@ public:
 
     void unreadChar(int c)
     {   
-        ungetc(c, file);
+        ungetc(c/*, file*/);
     }
 
     std::string getName()
@@ -2212,6 +2249,7 @@ std::fstream tout;
 /* implementation
  */
 
+#if __cplusplus > 199711L || defined(_MSC_VER)
 template<typename T>
 static std::string vtos(const T& t, std::true_type)
 { 
@@ -2240,6 +2278,7 @@ static std::string vtos(const T& t, std::false_type)
     std::string s;
     static std::stringstream ss;
     ss.str(std::string());
+    ss.clear();
     ss << t;
     ss >> s;
     return s;
@@ -2250,6 +2289,19 @@ static std::string vtos(const T& t)
 {
     return vtos(t, std::is_integral<T>());
 }
+#else
+template<typename T>
+static std::string vtos(const T& t)
+{
+    std::string s;
+    static std::stringstream ss;
+    ss.str(std::string());
+    ss.clear();
+    ss << t;
+    ss >> s;
+    return s;
+}
+#endif
 
 template <typename T>
 static std::string toString(const T& t)
@@ -2768,7 +2820,7 @@ static std::string __testlib_part(const std::string& s)
     {                                                                           \
         result[i] = readOne;                                                    \
         readManyIteration++;                                                    \
-        if (space && i + 1 < size)                                              \
+        if (strict && space && i + 1 < size)                                              \
             readSpace();                                                        \
     }                                                                           \
                                                                                 \
@@ -4436,4 +4488,194 @@ NORETURN void expectedButFound<long double>(TResult result, long double expected
     __testlib_expectedButFound(result, double(expected), double(found), prepend.c_str());
 }
 
+#endif
+
+#if __cplusplus > 199711L || defined(_MSC_VER)
+template <typename T>
+struct is_iterable
+{
+    template <typename U>
+    static char test(typename U::iterator* x);
+ 
+    template <typename U>
+    static long test(U* x);
+ 
+    static const bool value = sizeof(test<T>(0)) == 1;
+};
+
+template<bool B, class T = void>
+struct __testlib_enable_if {};
+ 
+template<class T>
+struct __testlib_enable_if<true, T> { typedef T type; };
+
+template <typename T>
+typename __testlib_enable_if<!is_iterable<T>::value, void>::type __testlib_print_one(const T& t)
+{
+    std::cout << t;
+}
+ 
+template <typename T>
+typename __testlib_enable_if<is_iterable<T>::value, void>::type __testlib_print_one(const T& t)
+{
+    bool first = true;
+    for (typename T::const_iterator i = t.begin(); i != t.end(); i++)
+    {
+        if (first)
+            first = false;
+        else
+            std::cout << " ";
+        std::cout << *i;
+    }
+}
+
+template<>
+typename __testlib_enable_if<is_iterable<std::string>::value, void>::type __testlib_print_one<std::string>(const std::string& t)
+{
+    std::cout << t;
+}
+ 
+template<typename A, typename B>
+void __println_range(A begin, B end)
+{
+    bool first = true;
+    for (B i = B(begin); i != end; i++)
+    {
+        if (first)
+            first = false;
+        else
+            std::cout << " ";
+        __testlib_print_one(*i);
+    }
+    std::cout << std::endl;
+}
+
+template<class T, class Enable = void>
+struct is_iterator
+{   
+    static T makeT();
+    typedef void * twoptrs[2];
+    static twoptrs & test(...);
+    template<class R> static typename R::iterator_category * test(R);
+    template<class R> static void * test(R *);
+    static const bool value = sizeof(test(makeT())) == sizeof(void *); 
+};
+
+template<class T>
+struct is_iterator<T, typename __testlib_enable_if<std::is_array<T>::value >::type>
+{
+    static const bool value = false; 
+};
+
+template <typename A, typename B>
+typename __testlib_enable_if<!is_iterator<B>::value, void>::type println(const A& a, const B& b)
+{
+    __testlib_print_one(a);
+    std::cout << " ";
+    __testlib_print_one(b);
+    std::cout << std::endl;
+}
+ 
+template <typename A, typename B>
+typename __testlib_enable_if<is_iterator<B>::value, void>::type println(const A& a, const B& b)
+{
+    __println_range(a, b);
+}
+
+template <typename A>
+void println(const A* a, const A* b)
+{
+    __println_range(a, b);
+}
+
+template <>
+void println<char>(const char* a, const char* b)
+{
+    __testlib_print_one(a);
+    std::cout << " ";
+    __testlib_print_one(b);
+    std::cout << std::endl;
+}
+
+template<typename T>
+void println(const T& x)
+{
+    __testlib_print_one(x);
+    std::cout << std::endl;
+}
+
+template<typename A, typename B, typename C>
+void println(const A& a, const B& b, const C& c)
+{
+    __testlib_print_one(a);
+    std::cout << " ";
+    __testlib_print_one(b);
+    std::cout << " ";
+    __testlib_print_one(c);
+    std::cout << std::endl;
+}
+
+template<typename A, typename B, typename C, typename D>
+void println(const A& a, const B& b, const C& c, const D& d)
+{
+    __testlib_print_one(a);
+    std::cout << " ";
+    __testlib_print_one(b);
+    std::cout << " ";
+    __testlib_print_one(c);
+    std::cout << " ";
+    __testlib_print_one(d);
+    std::cout << std::endl;
+}
+
+template<typename A, typename B, typename C, typename D, typename E>
+void println(const A& a, const B& b, const C& c, const D& d, const E& e)
+{
+    __testlib_print_one(a);
+    std::cout << " ";
+    __testlib_print_one(b);
+    std::cout << " ";
+    __testlib_print_one(c);
+    std::cout << " ";
+    __testlib_print_one(d);
+    std::cout << " ";
+    __testlib_print_one(e);
+    std::cout << std::endl;
+}
+
+template<typename A, typename B, typename C, typename D, typename E, typename F>
+void println(const A& a, const B& b, const C& c, const D& d, const E& e, const F& f)
+{
+    __testlib_print_one(a);
+    std::cout << " ";
+    __testlib_print_one(b);
+    std::cout << " ";
+    __testlib_print_one(c);
+    std::cout << " ";
+    __testlib_print_one(d);
+    std::cout << " ";
+    __testlib_print_one(e);
+    std::cout << " ";
+    __testlib_print_one(f);
+    std::cout << std::endl;
+}
+
+template<typename A, typename B, typename C, typename D, typename E, typename F, typename G>
+void println(const A& a, const B& b, const C& c, const D& d, const E& e, const F& f, const G& g)
+{
+    __testlib_print_one(a);
+    std::cout << " ";
+    __testlib_print_one(b);
+    std::cout << " ";
+    __testlib_print_one(c);
+    std::cout << " ";
+    __testlib_print_one(d);
+    std::cout << " ";
+    __testlib_print_one(e);
+    std::cout << " ";
+    __testlib_print_one(f);
+    std::cout << " ";
+    __testlib_print_one(g);
+    std::cout << std::endl;
+}
 #endif
