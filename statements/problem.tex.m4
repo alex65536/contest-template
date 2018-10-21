@@ -5,7 +5,7 @@
 \usepackage [english, russian] {babel}
 \usepackage {amsmath}
 \usepackage {amssymb}
-\usepackage [russian]{olymp}
+\usepackage [russian, arabic] {olymp}
 \usepackage {comment}
 \usepackage {epigraph}
 \usepackage {expdlist}

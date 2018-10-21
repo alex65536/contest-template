@@ -5,8 +5,6 @@
 % Authors: https://github.com/GassaFM/olymp.sty/blob/master/AUTHORS
 %
 
-% Patched by alex256: now we use arabic digits everywhere.
-
 \ProvidesPackage{olymp}
 
 \usepackage{verbatim}
@@ -476,7 +474,7 @@
         \noindent
         \refstepcounter{problem}
         \textbf{\problemheadfont\textsf{%
-        		\ifdefined\ShortProblemTitle\else{\kw@Problem\ \if@arabic\arabic{problem}\else\arabic{problem}\fi. }\fi%
+        		\ifdefined\ShortProblemTitle\else{\kw@Problem\ \if@arabic\arabic{problem}\else\Alph{problem}\fi. }\fi%
         		#1%
                 \ifdefined\DivisionNumber%
                 \if\DivisionNumber2%
@@ -697,7 +695,7 @@
 }
 
 \renewcommand{\@oddfoot}{
-\gdef\problemletter{\if@arabic\arabic{problem}\else\arabic{problem}\fi}
+\gdef\problemletter{\if@arabic\arabic{problem}\else\Alph{problem}\fi}
 
 % Revision signature
 \ifrevisionsignature%
