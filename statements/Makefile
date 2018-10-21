@@ -5,13 +5,14 @@ all: build
 PROBLEMS := $(shell ls *.tex | sort)
 PROBLEMS_NOEXT := $(PROBLEMS:%.tex=%)
 PROBLEMS_PDF := $(PROBLEMS:%.tex=%.pdf)
+DEPS := $(wildcard ../images/*.png) problem.tex.m4 ../contest.json
 
 build: contest.pdf $(PROBLEMS_PDF)
 
-%.pdf: %.tex $(wildcard ../images/%.png) ../contest.json
+%.pdf: %.tex $(DEPS)
 	./mkpdf.sh $(@:%.pdf=%) $(@:%.pdf=%)
 
-contest.pdf: $(PROBLEMS) $(wildcard ../images/*)
+contest.pdf: $(PROBLEMS) $(DEPS)
 	./mkpdf.sh contest $(PROBLEMS_NOEXT)
 
 clean:
