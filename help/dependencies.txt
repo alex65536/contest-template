@@ -1,5 +1,6 @@
 Dependencies required to build the problem:
     * Bash
+    * GNU Coreutils
     * GNU Make
     * GNU C
     * GNU C++

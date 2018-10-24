@@ -13,6 +13,7 @@ Dependencies required to build the contest:
   - Bash  
   - GNU Make  
   - GNU C  
+  - GNU Coreutils  
   - GNU C++  
   - Free Pascal Compiler  
   - GNU M4  
