@@ -7,8 +7,20 @@ jq . problem.json >/dev/null || exit
 SOL_INPUT="$(jq .problem.input problem.json -r)"
 SOL_OUTPUT="$(jq .problem.output problem.json -r)"
 
+SUPPLIES_TL=10
+SOLUTION_TL=10 # TODO: read solution time limit from JSON
+
+function runLimited {
+	# Run program with CPU time limit
+	local TIME_LIMIT="$1"; shift
+	( ulimit -t "$TIME_LIMIT"; "$@"; )
+	local EXITCODE="$?"
+	return "$EXITCODE"
+}
+
 function callSolution {
 	# Get input, output files & redirections
+	local ERROR=0
 	local IN_FILE="$1"
 	local OUT_FILE="$2"
 	local IN_REDIR="/dev/null"
@@ -17,11 +29,16 @@ function callSolution {
 	[[ -z "${SOL_OUTPUT}" ]] && OUT_REDIR="${OUT_FILE}"
 	# Execute solution
 	[[ -z "${SOL_INPUT}" ]] || cp -T "${IN_FILE}" "${SOL_INPUT}"
-	../solution <"${IN_REDIR}" >"${OUT_REDIR}"
-	[[ -z "${SOL_OUTPUT}" ]] || cp -T "${SOL_OUTPUT}" "${OUT_FILE}"
+	if ! runLimited "$SOLUTION_TL" ../solution <"${IN_REDIR}" >"${OUT_REDIR}"; then
+		echo "Solution returned unsuccessfully (maybe killed because of time limit?)"
+		ERROR=1
+	else
+		[[ -z "${SOL_OUTPUT}" ]] || cp -T "${SOL_OUTPUT}" "${OUT_FILE}"
+	fi
 	# Cleanup temp files
 	[[ -z "${SOL_INPUT}" ]] || rm -f "${SOL_INPUT}"
 	[[ -z "${SOL_OUTPUT}" ]] || rm -f "${SOL_OUTPUT}"
+	[[ "$ERROR" == 1 ]] && exit 3
 }
 
 function makeTest {
@@ -30,13 +47,13 @@ function makeTest {
 	local IN_FILE="${TESTID}.in"
 	local OUT_FILE="${TESTID}.out"
 	cat >"${IN_FILE}"
-	if ! ../validator <"${IN_FILE}"; then
+	if ! runLimited "$SUPPLIES_TL" ../validator <"${IN_FILE}"; then
 		echo "Validator error"
 		exit 3
 	fi
 	callSolution "${IN_FILE}" "${OUT_FILE}"
 	if [[ -e ../checker ]]; then
-		if ! ../checker "${IN_FILE}" "${OUT_FILE}" "${OUT_FILE}"; then
+		if ! runLimited "$SUPPLIES_TL" ../checker "${IN_FILE}" "${OUT_FILE}" "${OUT_FILE}"; then
 			echo "Checker error"
 			exit 3
 		fi
@@ -46,9 +63,14 @@ function makeTest {
 function makeGenTest {
 	GEN_APP="$1"
 	shift
-	"${GEN_APP}" "$@" >tmp.txt
-	makeTest <tmp.txt
-	rm -f tmp.txt
+	if ! runLimited "$SUPPLIES_TL" "${GEN_APP}" "$@" >tmp.txt; then
+		makeTest <tmp.txt
+		rm -f tmp.txt
+	else
+		rm -f tmp.txt
+		echo "Generator error"
+		exit 3
+	fi
 }
 
 function prepare {
