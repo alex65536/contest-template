@@ -1,4 +1,5 @@
 .PHONY: all build clean
+.NOTPARALLEL: build
 
 all: build
 
