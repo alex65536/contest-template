@@ -29,10 +29,10 @@ solution.%: ../../solutions/$(PROBLEM_NAME).%
 	fpc $^ -o$@ -O3 -Mdelphi && rm $@.o
 
 %: %.c
-	gcc $^ -o $@ -Wall -Wextra -pedantic -O3
+	gcc $^ -o $@ -Wall -Wextra -O3
 
 %: %.cpp
-	g++ $^ -o $@ -Wall -Wextra -pedantic -O3 --std=c++14
+	g++ $^ -o $@ -Wall -Wextra -O3 --std=c++14
 
 clean:
 	rm -f *.target
