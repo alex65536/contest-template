@@ -63,7 +63,7 @@ function makeTest {
 function makeGenTest {
 	GEN_APP="$1"
 	shift
-	if ! runLimited "$SUPPLIES_TL" "${GEN_APP}" "$@" >tmp.txt; then
+	if runLimited "$SUPPLIES_TL" "${GEN_APP}" "$@" >tmp.txt; then
 		makeTest <tmp.txt
 		rm -f tmp.txt
 	else
