@@ -60,7 +60,28 @@ function makeTest {
 	fi
 }
 
+function sanitizeParams {
+	for PARAM in "$@"; do
+		echo -n "'"
+		# shellcheck disable=SC1003
+		echo -n "$PARAM" | sed -E 's#'\''#'\''\\'\'\''#g' # Magic here: replace ' -> '\'' (quote escaping)
+		echo -n "' "
+	done
+}
+
+function genParamCheck {
+	PARAM_STR="$(sanitizeParams "$@")"
+	if [[ "${GEN_PARAMS["${PARAM_STR}"]:-0}" == 1 ]]; then
+		echo "Warning: the following command line was invoked twice:"
+		echo "  ${PARAM_STR}"
+		echo "The generated tests will be the same; aborting"
+		exit 4
+	fi
+	GEN_PARAMS["${PARAM_STR}"]=1
+}
+
 function makeGenTest {
+	genParamCheck "$@"
 	GEN_APP="$1"
 	shift
 	if runLimited "$SUPPLIES_TL" "${GEN_APP}" "$@" >tmp.txt; then
@@ -81,6 +102,7 @@ function prepare {
 		cp ../testlib.h .
 	)
 	TESTID=0
+	declare -gA GEN_PARAMS
 }
 
 . genTests.sh
