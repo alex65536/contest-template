@@ -94,6 +94,13 @@ function makeGenTest {
 	fi
 }
 
+function makeTestSeries {
+	COUNT="$1"; shift
+	for ((I=0; I < COUNT; ++I)); do
+		makeGenTest "$@" test$I
+	done
+}
+
 function prepare {
 	rm -f ./*.in ./*.out ./checker.* ./checker ./testlib.h
 	stat --printf='' ../checker.* &>/dev/null && (
