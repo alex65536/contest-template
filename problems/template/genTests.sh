@@ -2,16 +2,17 @@
 
 function runPretestGen {
 
-makeTest <<<"2 2"
-makeTest <<<"3 5"
+tcat <<<"2 2"
+tcat <<<"3 5"
 
 }
 
+
 function runTestGen {
 
-makeTest <<<"100 100"
-makeTest <<<"200 200"
-makeTest <<<"-1 -2"
-makeTest <<<"-42 42"
+tcat <<<"100 100"
+tcat <<<"200 200"
+tcat <<<"-1 -2"
+tcat <<<"-42 42"
 
 }
