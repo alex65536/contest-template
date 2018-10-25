@@ -82,8 +82,7 @@ function genParamCheck {
 
 function makeGenTest {
 	genParamCheck "$@"
-	GEN_APP="$1"
-	shift
+	GEN_APP="$1"; shift
 	if runLimited "$SUPPLIES_TL" "${GEN_APP}" "$@" >tmp.txt; then
 		makeTest <tmp.txt
 		rm -f tmp.txt
@@ -100,6 +99,11 @@ function makeTestSeries {
 		makeGenTest "$@" test$I
 	done
 }
+
+# Aliases
+function tcat { makeTest "$@"; }
+function tgen { makeGenTest "$@"; }
+function tmany { makeTestSeries "$@"; }
 
 function prepare {
 	rm -f ./*.in ./*.out ./checker.* ./checker ./testlib.h
