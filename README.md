@@ -23,3 +23,9 @@ Dependencies required to build the contest:
   - SSH (to use `make deploy` with a patched CMS)
 
 See also `help/dependencies.txt`.
+
+## Usage
+
+- Clone this repo 
+- Use `ungit.sh` to remove unnecessary files
+- Prepare contest with this template
