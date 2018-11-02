@@ -50,7 +50,7 @@ function runStress {
 	while :; do
 		: $((TESTID++))
 		echo -e "\033[33;1mTest ${TESTID}\033[0m"
-		./gen $(eval "echo ${GEN_PARM}") seed=${RANDOM}${RANDOM}${RANDOM} >input.txt || finish
+		./gen $(eval "echo ${GEN_PARM}") ${RANDOM}${RANDOM}${RANDOM} >input.txt || finish
 		[[ "${SHOW_INPUT}" == 0 ]] || showInput
 		if ! ./validator <input.txt; then
 			[[ "${SHOW_INPUT}" == 0 ]] && showInput
