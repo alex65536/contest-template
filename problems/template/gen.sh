@@ -10,10 +10,12 @@ SOL_OUTPUT="$(jq .problem.output problem.json -r)"
 SUPPLIES_TL=10
 SOLUTION_TL=10 # TODO: read solution time limit from JSON
 
+STACK_LIMIT=262144
+
 function runLimited {
 	# Run program with CPU time limit
 	local TIME_LIMIT="$1"; shift
-	( ulimit -t "$TIME_LIMIT"; "$@"; )
+	( ulimit -t "$TIME_LIMIT"; ulimit -s "$STACK_LIMIT"; "$@"; )
 	local EXITCODE="$?"
 	return "$EXITCODE"
 }
