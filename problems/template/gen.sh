@@ -72,7 +72,7 @@ function sanitizeParams {
 }
 
 function genParamCheck {
-	PARAM_STR="$(sanitizeParams "$@")"
+	local PARAM_STR="$(sanitizeParams "$@")"
 	if [[ "${GEN_PARAMS["${PARAM_STR}"]:-0}" == 1 ]]; then
 		echo "Warning: the following command line was invoked twice:"
 		echo "  ${PARAM_STR}"
@@ -84,7 +84,7 @@ function genParamCheck {
 
 function makeGenTest {
 	genParamCheck "$@"
-	GEN_APP="$1"; shift
+	local GEN_APP="$1"; shift
 	if runLimited "$SUPPLIES_TL" "${GEN_APP}" "$@" >tmp.txt; then
 		makeTest <tmp.txt
 		rm -f tmp.txt
@@ -96,7 +96,7 @@ function makeGenTest {
 }
 
 function makeTestSeries {
-	COUNT="$1"; shift
+	local COUNT="$1"; shift
 	for ((I=0; I < COUNT; ++I)); do
 		makeGenTest "$@" test$I
 	done
