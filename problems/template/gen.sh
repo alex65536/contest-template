@@ -72,7 +72,8 @@ function sanitizeParams {
 }
 
 function genParamCheck {
-	local PARAM_STR="$(sanitizeParams "$@")"
+	local PARAM_STR
+	PARAM_STR="$(sanitizeParams "$@")"
 	if [[ "${GEN_PARAMS["${PARAM_STR}"]:-0}" == 1 ]]; then
 		echo "Warning: the following command line was invoked twice:"
 		echo "  ${PARAM_STR}"
@@ -103,7 +104,7 @@ function makeTestSeries {
 }
 
 # Aliases
-function tcat { makeTest "$@"; }
+function tcat { makeTest; }
 function tgen { makeGenTest "$@"; }
 function tmany { makeTestSeries "$@"; }
 function group { GROUP="$1"; }
