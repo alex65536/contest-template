@@ -49,7 +49,7 @@ function makeTest {
 	local IN_FILE="${TESTID}.in"
 	local OUT_FILE="${TESTID}.out"
 	cat >"${IN_FILE}"
-	if ! runLimited "$SUPPLIES_TL" ../validator <"${IN_FILE}"; then
+	if ! runLimited "$SUPPLIES_TL" ../validator --testset "${TESTSET}" --group "${GROUP}" <"${IN_FILE}"; then
 		echo "Validator error"
 		exit 3
 	fi
@@ -106,6 +106,7 @@ function makeTestSeries {
 function tcat { makeTest "$@"; }
 function tgen { makeGenTest "$@"; }
 function tmany { makeTestSeries "$@"; }
+function group { GROUP="$1"; }
 
 function prepare {
 	rm -f ./*.in ./*.out ./checker.* ./checker ./testlib.h
@@ -125,6 +126,8 @@ echo "Generating pretests..."
 [ -d pretests ] || mkdir pretests
 (
 	cd pretests || exit
+	TESTSET='pretests'
+	GROUP=''
 	prepare
 	runPretestGen
 ) || exit "$?"
@@ -134,6 +137,8 @@ echo "Generating tests..."
 [ -d tests ] || mkdir tests
 (
 	cd tests || exit
+	TESTSET='tests'
+	GROUP=''
 	prepare
 	runTestGen
 ) || exit "$?"
