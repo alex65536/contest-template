@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -o pipefail
+
 TESTID=0
 
 jq . problem.json >/dev/null || exit
@@ -96,6 +98,14 @@ function makeGenTest {
 	fi
 }
 
+function makeUnpackTest {
+	local ZIP_NAME="$1"
+	local FILE_NAME="$2"
+	unzip -p "${ZIP_NAME}" "${FILE_NAME}" | makeTest
+	EXITCODE="$?"
+	[[ "${EXITCODE}" == 0 ]] || exit "${EXITCODE}"
+}
+
 function makeTestSeries {
 	local COUNT="$1"; shift
 	for ((I=0; I < COUNT; ++I)); do
@@ -106,6 +116,7 @@ function makeTestSeries {
 # Aliases
 function tcat { makeTest; }
 function tgen { makeGenTest "$@"; }
+function tzip { makeUnpackTest "$@"; }
 function tmany { makeTestSeries "$@"; }
 function group { GROUP="$1"; }
 
