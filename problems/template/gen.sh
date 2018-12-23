@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -o pipefail
-
 TESTID=0
 
 jq . problem.json >/dev/null || exit
@@ -101,9 +99,14 @@ function makeGenTest {
 function makeUnpackTest {
 	local ZIP_NAME="$1"
 	local FILE_NAME="$2"
-	unzip -p "${ZIP_NAME}" "${FILE_NAME}" | makeTest
-	EXITCODE="$?"
-	[[ "${EXITCODE}" == 0 ]] || exit "${EXITCODE}"
+	if unzip -p "${ZIP_NAME}" "${FILE_NAME}" >tmp.txt; then
+		makeTest <tmp.txt
+		rm -f tmp.txt
+	else
+		rm -f tmp.txt
+		echo "Unarchiving error"
+		exit 3
+	fi
 }
 
 function makeTestSeries {
