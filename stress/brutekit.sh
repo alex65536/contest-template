@@ -46,13 +46,20 @@ function runStress {
 		cat input.txt
 	}
 	
+	function showGenParams {
+		echo -e "\033[34;1mGenerator params:\033[0m"
+		echo "${GEN_PARM} ${RAND_SEED}"
+	}
+	
 	cd "${TMPDIR}"
 	
 	local TESTID=0
 	while :; do
 		: $((TESTID++))
 		echo -e "\033[33;1mTest ${TESTID}\033[0m"
-		./gen ${GEN_PARM} ${RANDOM}${RANDOM}${RANDOM} >input.txt || finish
+		RAND_SEED=${RANDOM}${RANDOM}${RANDOM}
+		./gen ${GEN_PARM} ${RAND_SEED} >input.txt || finish
+		[[ "${SHOW_INPUT}" == 0 ]] || showGenParams
 		[[ "${SHOW_INPUT}" == 0 ]] || showInput
 		if ! ./validator <input.txt; then
 			[[ "${SHOW_INPUT}" == 0 ]] && showInput
