@@ -19,6 +19,7 @@ Dependencies required to build the contest:
   - GNU M4  
   - latexmk  
   - jq  
+  - dos2unix  
   - Python 3.x (for tools/testerize.py)  
   - SSH (to use `make deploy` with a patched CMS)
 

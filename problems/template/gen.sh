@@ -99,7 +99,10 @@ function makeGenTest {
 function makeUnpackTest {
 	local ZIP_NAME="$1"
 	local FILE_NAME="$2"
-	if unzip -p "${ZIP_NAME}" "${FILE_NAME}" >tmp.txt; then
+	if \
+		unzip -p "${ZIP_NAME}" "${FILE_NAME}" >tmp.txt && \
+		dos2unix tmp.txt &>/dev/null
+	then
 		makeTest <tmp.txt
 		rm -f tmp.txt
 	else
