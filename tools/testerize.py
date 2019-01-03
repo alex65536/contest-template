@@ -4,8 +4,11 @@ import os
 import sys
 import json
 
-def get_test(path, number, kind):
-    return os.path.join(path, 'tests', '%d.%s' % (number, kind))
+in_fmt = '%d.in'
+out_fmt = '%d.out'
+
+def get_test(path, test_num, test_fmt):
+    return os.path.join(path, 'tests', test_fmt % test_num)
 
 def testerize(path):
     src_prob = json.loads(open(os.path.join(path, 'problem.json'), 'r').read())['problem']
@@ -39,12 +42,12 @@ def testerize(path):
     }
     dst_prob['TestList'] = []
     test_id = 1
-    while os.path.exists(get_test(path, test_id, 'in')) or os.path.exists(get_test(path,test_id, 'out')):
+    while os.path.exists(get_test(path, test_id, in_fmt)) or os.path.exists(get_test(path, test_id, out_fmt)):
         cur_test = {
             'Cost': 1.0,
         }
-        cur_test['InputFile'] = '%d.in' % test_id
-        cur_test['OutputFile'] = '%d.out' % test_id
+        cur_test['InputFile'] = in_fmt % test_id
+        cur_test['OutputFile'] = out_fmt % test_id
         dst_prob['TestList'] += [cur_test]
         test_id += 1
     test_cost = 0 if test_id == 1 else 100.0 / (test_id - 1)
