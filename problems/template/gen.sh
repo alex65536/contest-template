@@ -12,6 +12,10 @@ SOLUTION_TL=10 # TODO: read solution time limit from JSON
 
 STACK_LIMIT=262144
 
+function formatTestNumber {
+    printf "%02d" "$1"
+}
+
 function runLimited {
 	# Run program with CPU time limit
 	local TIME_LIMIT="$1"; shift
@@ -45,9 +49,10 @@ function callSolution {
 
 function makeTest {
 	: $((TESTID++))
-	echo "Generating test ${TESTID}"
-	local IN_FILE="${TESTID}.in"
-	local OUT_FILE="${TESTID}.out"
+	local TEST_NUMBER="$(formatTestNumber "${TESTID}")"
+	echo "Generating test ${TEST_NUMBER}"
+	local IN_FILE="${TEST_NUMBER}"
+	local OUT_FILE="${TEST_NUMBER}.a"
 	cat >"${IN_FILE}"
 	if ! runLimited "$SUPPLIES_TL" ../validator --testset "${TESTSET}" --group "${GROUP}" <"${IN_FILE}"; then
 		echo "Validator error"

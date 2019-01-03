@@ -38,6 +38,7 @@ clean:
 	rm -f *.target
 	rm -f solution.*
 	find . -type f ! -name "*.?*" ! -name "Makefile" -delete
-	rm -f tests/*.in tests/*.out tests/checker* tests/tmp.txt tests/testlib.h
-	rm -f pretests/*.in pretests/*.out pretests/checker* pretests/tmp.txt pretests/testlib.h
+	rm -f tests/checker* tests/tmp.txt tests/testlib.h
+	rm -f pretests/checker* pretests/tmp.txt pretests/testlib.h
+	find . -type f -regextype egrep -regex '(./tests|./pretests)/[0-9]+(.a)?' -delete
 	rm -f *.o
