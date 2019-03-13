@@ -107,9 +107,16 @@ function makeUnpackTest {
 		rm -f tmp.txt
 	else
 		rm -f tmp.txt
-		echo "Unarchiving error"
+		echo "Unarchiving error while trying to extract \"${FILE_NAME}\" from \"${ZIP_NAME}\""
 		exit 3
 	fi
+}
+
+function makeUnpackMany {
+	local ZIP_NAME="$1"; shift
+	for FILE in "$@"; do
+		makeUnpackTest "${ZIP_NAME}" "${FILE}"
+	done
 }
 
 function makeTestSeries {
@@ -122,7 +129,7 @@ function makeTestSeries {
 # Aliases
 function tcat { makeTest; }
 function tgen { makeGenTest "$@"; }
-function tzip { makeUnpackTest "$@"; }
+function tzip { makeUnpackMany "$@"; }
 function tmany { makeTestSeries "$@"; }
 function group { GROUP="$1"; }
 
