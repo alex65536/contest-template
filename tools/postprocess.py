@@ -77,7 +77,7 @@ def process(verbose=3):
             fail_reason = ''
             depends_ok = True
             if len(subtask) >= 3:
-                for dep in subtask[3]:
+                for dep in subtask[2]:
                     if dep not in passed_subtasks:
                         depends_ok = False
                         break
