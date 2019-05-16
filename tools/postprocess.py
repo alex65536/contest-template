@@ -111,7 +111,7 @@ def process(verbose=3):
                         stderr.write(fail_reason)
             score += add_score
             max_score += cost
-        if testid != len(verdicts):
+        if testid < len(verdicts):
             stderr.write('WARNING: {} tests processed, but {} tests exist\n'
                          .format(testid, len(verdicts)))
     else:
