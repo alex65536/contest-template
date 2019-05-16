@@ -82,9 +82,9 @@ def process(verbose=3):
                         depends_ok = False
                         break
             for i in range(subtask[1]):
-                verdict = ('skipped' if testid >= length(verdicts)
+                verdict = ('skipped' if testid >= len(verdicts)
                            else verdicts[testid])
-                test_result = (False if testid >= length(test_results)
+                test_result = (False if testid >= len(test_results)
                                else test_results[testid])
                 if not depends_ok:
                     verdict = 'skipped'
