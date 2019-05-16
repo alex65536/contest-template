@@ -38,6 +38,9 @@ import traceback
 # 3 - print failure reason on subtasks
 # 4 - print entire log on subtasks
 def process(verbose=3):
+    if verbose > 1:
+        stderr.write('---\n')
+
     testlog = json.loads(stdin.read())
 
     problem = json.loads(open('problem.json', 'r').read())['problem']
@@ -66,23 +69,39 @@ def process(verbose=3):
     elif score_type == 'subtask':
         testid = 0
         groupid = 0
+        passed_subtasks = set()
         for subtask in problem['subtasks']:
+            groupid += 1
+            cost = subtask[0]
             accepted = True
             fail_reason = ''
+            depends_ok = True
+            if len(subtask) >= 3:
+                for dep in subtask[3]:
+                    if dep not in passed_subtasks:
+                        depends_ok = False
+                        break
             for i in range(subtask[1]):
+                verdict = ('skipped' if testid >= length(verdicts)
+                           else verdicts[testid])
+                test_result = (False if testid >= length(test_results)
+                               else test_results[testid])
+                if not depends_ok:
+                    verdict = 'skipped'
+                    test_result = False
                 if verbose > 3:
                     stdout.write(' - test {}: {}\n'.format(
-                        testid+1, verdicts[testid]))
-                if not test_results[testid]:
+                        testid+1, verdict))
+                if not test_result:
                     accepted = False
                     if fail_reason == '':
                         fail_reason = ' - test {}: {}\n'.format(
-                            testid+1, verdicts[testid])
+                            testid+1, verdict)
                 testid += 1
-            cost = subtask[0]
             add_score = cost if accepted else 0
+            if accepted:
+                passed_subtasks.add(groupid)
             if verbose > 1:
-                groupid += 1
                 stderr.write('subtask {}: {}/{} points\n'.format(
                     groupid, add_score, cost))
                 if verbose == 3:
