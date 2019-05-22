@@ -35,12 +35,9 @@ import traceback
 # 0 - no stderr (except warnings)
 # 1 - print total score only
 # 2 - print report on tests (byTest) and on subtasks (subtask)
-# 3 - print failure reason on subtasks
+# 3 - print failure reason on subtasks (subtask) and tests (byTest)
 # 4 - print entire log on subtasks
 def process(verbose=3):
-    if verbose > 1:
-        stderr.write('---\n')
-
     testlog = json.loads(stdin.read())
 
     problem = json.loads(open('problem.json', 'r').read())['problem']
@@ -61,7 +58,10 @@ def process(verbose=3):
         for res in test_results:
             testid += 1
             add_score = cost if res else 0
-            if verbose > 1:
+            if verbose > 2:
+                stderr.write('test {}: {}, {}/{} points\n'.format(
+                    testid, verdicts[testid], add_score, cost))
+            elif verbose > 1:
                 stderr.write('test {}: {}/{} points\n'.format(
                     testid, add_score, cost))
             score += add_score
