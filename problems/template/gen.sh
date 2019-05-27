@@ -17,6 +17,9 @@ function runLimited {
 	local TIME_LIMIT="$1"; shift
 	( ulimit -t "$TIME_LIMIT"; ulimit -s "$STACK_LIMIT"; "$@"; )
 	local EXITCODE="$?"
+	if [[ "$EXITCODE" != 0 ]]; then
+		echo '"'"$@"'"'" finished with exitcode = $EXITCODE"
+	fi
 	return "$EXITCODE"
 }
 
