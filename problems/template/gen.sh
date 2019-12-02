@@ -48,6 +48,9 @@ function callSolution {
 
 function makeTest {
 	: $((TESTID++))
+	local GNAME="${GROUP}"
+	[[ -z "${GNAME}" ]] && local GNAME="__no_group__5e07b367"
+	: $((TESTS_BY_GROUP[${GNAME}]++))
 	echo "Generating test ${TESTID}"
 	local IN_FILE="${TESTID}.in"
 	local OUT_FILE="${TESTID}.out"
@@ -145,9 +148,28 @@ function prepare {
 	)
 	TESTID=0
 	declare -gA GEN_PARAMS
+	declare -gA TESTS_BY_GROUP
+}
+
+function finish {
+	(
+		echo "Testest \"${TESTSET}\" generated."
+		local -a GRNAMES
+		mapfile -t GRNAMES <<<"$(printf '%s\n' "${!TESTS_BY_GROUP[@]}" | LC_COLLATE=C sort)"
+		for GNAME in "${GRNAMES[@]}"; do
+			if [[ "${GNAME}" == "__no_group__5e07b367" ]]; then
+				echo "  - ungrouped: ${TESTS_BY_GROUP[${GNAME}]}"
+			else
+				echo "  - group ${GNAME}: ${TESTS_BY_GROUP[${GNAME}]}"
+			fi
+		done
+		echo
+	) >>../gen-tests.target 
 }
 
 . genTests.sh
+
+: >gen-tests.target
 
 # Pretests
 echo "Generating pretests..."
@@ -158,6 +180,7 @@ echo "Generating pretests..."
 	GROUP=''
 	prepare
 	runPretestGen
+	finish
 ) || exit "$?"
 
 # Tests
@@ -169,4 +192,5 @@ echo "Generating tests..."
 	GROUP=''
 	prepare
 	runTestGen
+	finish
 ) || exit "$?"

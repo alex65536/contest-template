@@ -15,7 +15,6 @@ test: $(CHECKER)
 
 gen-tests.target: gen.sh genTests.sh solution validator $(CHECKER) $(GENERATORS) problem.json
 	./gen.sh
-	touch gen-tests.target
 
 .PRECIOUS: solution.%
 
