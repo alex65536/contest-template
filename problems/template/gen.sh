@@ -157,6 +157,7 @@ function finish {
 		local -a GRNAMES
 		mapfile -t GRNAMES <<<"$(printf '%s\n' "${!TESTS_BY_GROUP[@]}" | LC_COLLATE=C sort -n)"
 		for GNAME in "${GRNAMES[@]}"; do
+			[[ -z "${GNAME}" ]] && continue
 			if [[ "${GNAME}" == "__no_group__5e07b367" ]]; then
 				echo "  - ungrouped: ${TESTS_BY_GROUP[${GNAME}]}"
 			else
