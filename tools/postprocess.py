@@ -60,7 +60,7 @@ def process(verbose=3):
             add_score = cost if res else 0
             if verbose > 2:
                 stderr.write('test {}: {}, {}/{} points\n'.format(
-                    testid, verdicts[testid], add_score, cost))
+                    testid, verdicts[testid - 1], add_score, cost))
             elif verbose > 1:
                 stderr.write('test {}: {}/{} points\n'.format(
                     testid, add_score, cost))
