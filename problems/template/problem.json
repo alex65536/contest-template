@@ -3,7 +3,7 @@
         "name": "Demo problem",
         "input": "",
         "output": "",
-        "timeLimit": 1.5,
+        "timeLimit": 2.0,
         "memoryLimit": 256,
         "scoreType": "subtask",
         "subtasks": [
