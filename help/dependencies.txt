@@ -10,5 +10,4 @@ Dependencies required to build the problem:
     * jq
     * dos2unix
     * sed
-    * Python 3.x (for tools/testerize.py)
-    * SSH (to use `make deploy` with a patched CMS)
+    * Python 3.x

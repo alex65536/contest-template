@@ -1,4 +1,4 @@
-.PHONY: all build clean full-clean prepare deploy tspkg
+.PHONY: all build clean full-clean prepare tspkg
 
 DIRS := statements problems solutions
 DIRS_BUILD := $(DIRS:%=%-build)
@@ -8,9 +8,6 @@ all: build prepare
 
 prepare:
 	./tools/prepare.sh
-
-deploy: build prepare
-	./tools/deploy.sh
 
 tspkg: build prepare
 	./tools/tspkg.sh

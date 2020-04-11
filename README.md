@@ -21,8 +21,7 @@ Dependencies required to build the contest:
   - jq  
   - dos2unix  
   - sed  
-  - Python 3.x (for tools/testerize.py)  
-  - SSH (to use `make deploy` with a patched CMS)
+  - Python 3.x
 
 See also `help/dependencies.txt`.
 
