@@ -49,7 +49,7 @@ if obj:
         infile = "стандартный ввод"
     outfile = obj["problem"]["output"]
     if not outfile:
-        outfile = "стандартный ввод"
+        outfile = "стандартный вывод"
 
 print("\\def\\ProblemTimeLimit{{{}}}".format(tl))
 print("\\def\\ProblemMemoryLimit{{{}}}".format(ml))
