@@ -26,7 +26,7 @@ full-clean: clean
 .PHONY: $(DIRS_BUILD) $(DIRS_CLEAN)
 
 $(DIRS_BUILD):
-	+cd $(@:%-build=%) && make build
+	+cd $(@:%-build=%) && $(MAKE) build
 
 $(DIRS_CLEAN):
-	+cd $(@:%-clean=%) && make clean
+	+cd $(@:%-clean=%) && $(MAKE) clean

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # If zero, input is shown only on fail
 # If non-zero, input is shown each time

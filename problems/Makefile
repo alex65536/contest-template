@@ -11,7 +11,7 @@ build: $(PROBLEMS-BUILD)
 clean: $(PROBLEMS-CLEAN)
 
 $(PROBLEMS-BUILD):
-	+cd $(@:%-build=%) && make build
+	+cd $(@:%-build=%) && $(MAKE) build
 
 $(PROBLEMS-CLEAN):
-	+cd $(@:%-clean=%) && make clean
+	+cd $(@:%-clean=%) && $(MAKE) clean
