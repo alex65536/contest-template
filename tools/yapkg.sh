@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ $# != 1 ]]; then
-	echo "Usage yapkg.sh problem"
+	echo "Usage yapkg.sh PROBLEMS..."
 	exit 1
 fi
 
