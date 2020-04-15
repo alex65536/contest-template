@@ -11,7 +11,6 @@ make prepare
 	make
 )
 
-tools/ya_prepare.sh normal
 while [[ $# != 0 ]]; do
 	(
 		cd problems/"$1" || exit
@@ -20,4 +19,3 @@ while [[ $# != 0 ]]; do
 	)
 	shift
 done
-tools/ya_prepare.sh inverse
