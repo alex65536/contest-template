@@ -9,6 +9,9 @@ function runStress {
 	local NAIVE_NAME="$1"; shift
 	local GEN_NAME="$1"; shift
 	local GEN_PARM="$1"; shift
+	local SOURCES=("$@")
+	
+	[[ "${#SOURCES}" == 0 ]] && SOURCES=("${TASK_NAME}.cpp")
 	
 	local TMPDIR="$(mktemp -d)"
 	
@@ -20,11 +23,22 @@ function runStress {
 	
 	trap 'finish' SIGHUP SIGINT SIGQUIT SIGTERM
 	
-	g++ --std=c++11 -O2 "../solutions/${TASK_NAME}.cpp" -o "${TMPDIR}/solution" || exit 1
-	g++ --std=c++11 -O2 "../solutions/${NAIVE_NAME}.cpp" -o "${TMPDIR}/naive" || exit 1
+	for SOURCE in "${SOURCES[@]}"; do
+		echo -e "\033[34;1mCompiling\033[0m ${SOURCE}"
+		g++ --std=c++14 -O2 "../solutions/${SOURCE}" -o "${TMPDIR}/${SOURCE}.exe" || exit 1
+	done
+	
+	echo -e "\033[34;1mCompiling\033[0m ${NAIVE_NAME}.cpp"
+	g++ --std=c++14 -O2 "../solutions/${NAIVE_NAME}.cpp" -o "${TMPDIR}/naive" || exit 1
+	
+	echo -e "\033[34;1mCompiling generator\033[0m ${GEN_NAME}.cpp"
 	g++ --std=c++14 -O2 "../problems/${TASK_NAME}/${GEN_NAME}.cpp" -o "${TMPDIR}/gen" || exit 1
+	
+	echo -e "\033[34;1mCompiling validator\033[0m"
 	g++ --std=c++14 -O2 "../problems/${TASK_NAME}/validator.cpp" -o "${TMPDIR}/validator" || exit 1
+	
 	if [[ -f "../problems/${TASK_NAME}/checker.cpp" ]]; then
+		echo -e "\033[34;1mCompiling checker\033[0m"
 		g++ --std=c++14 -O2 "../problems/${TASK_NAME}/checker.cpp" -o "${TMPDIR}/checker" || exit 1
 	fi
 	
@@ -65,21 +79,23 @@ function runStress {
 			[[ "${SHOW_INPUT}" == 0 ]] && showInput
 			finish
 		fi
-		if ! ./naive; then
+		if ! ./naive <input.txt >output.txt; then
 			[[ "${SHOW_INPUT}" == 0 ]] && showInput
-			echo -e "\033[35;1mRE\033[0m (on naive)"
+			echo -e "\033[35;1mRE\033[0m ${NAIVE_NAME}.cpp"
 			finish
 		fi
 		mv output.txt answer.txt
-		if ! ./solution; then
-			[[ "${SHOW_INPUT}" == 0 ]] && showInput
-			echo -e "\033[35;1mRE\033[0m"
-			finish
-		fi
-		if ! kompare input.txt output.txt answer.txt; then
-			[[ "${SHOW_INPUT}" == 0 ]] && showInput
-			echo -e "\033[31;1mWA\033[0m"
-			finish
-		fi
+		for SOURCE in "${SOURCES[@]}"; do
+			if ! "./${SOURCE}.exe" <input.txt >output.txt; then
+				[[ "${SHOW_INPUT}" == 0 ]] && showInput
+				echo -e "\033[35;1mRE\033[0m ${SOURCE}"
+				finish
+			fi
+			if ! kompare input.txt output.txt answer.txt; then
+				[[ "${SHOW_INPUT}" == 0 ]] && showInput
+				echo -e "\033[31;1mWA\033[0m ${SOURCE}"
+				finish
+			fi
+		done
 	done
 }

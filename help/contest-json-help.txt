@@ -1,16 +1,4 @@
 "contest": Contest info
     "name": Contest name
-    "description": Contest description
     "date": Contest date
     "location": Contest location
-    "tokenCount": Token mode (per problem)
-        * -1: Infinite tokens
-        * 0: No tokens
-        * <other integer>: Fixed number of tokens
-    "submissionCount": Number of submissions (per problem)
-    "time": Contest time parameters
-        "start": Contest start time, in format "YYYY-MM-DD HH:NN", (e. g. "2018-06-22 09:00")
-        "length": Contest length in minutes
-    "mode": Contest mode
-        "running": Giving points for pretests
-        "final": No points for pretests given, they are removed from the problems

@@ -27,6 +27,6 @@
 
 \graphicspath{{../images/}}
 
-_includes
+_infiles
 
 \end {document}

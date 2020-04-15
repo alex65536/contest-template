@@ -3,7 +3,7 @@
 
 all: build
 
-PROBLEMS := $(shell ls *.tex | sort)
+PROBLEMS := $(shell ls *.tex | env LC_COLLATE=C sort)
 PROBLEMS_NOEXT := $(PROBLEMS:%.tex=%)
 PROBLEMS_PDF := $(PROBLEMS:%.tex=%.pdf)
 DEPS := $(wildcard ../images/*.png) problem.tex.m4 ../contest.json

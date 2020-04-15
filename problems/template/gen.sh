@@ -21,6 +21,9 @@ function runLimited {
 	local TIME_LIMIT="$1"; shift
 	( ulimit -t "$TIME_LIMIT"; ulimit -s "$STACK_LIMIT"; "$@"; )
 	local EXITCODE="$?"
+	if [[ "$EXITCODE" != 0 ]]; then
+		echo '"'"$@"'"'" finished with exitcode = $EXITCODE"
+	fi
 	return "$EXITCODE"
 }
 
@@ -49,6 +52,9 @@ function callSolution {
 
 function makeTest {
 	: $((TESTID++))
+	local GNAME="${GROUP}"
+	[[ -z "${GNAME}" ]] && local GNAME="__no_group__5e07b367"
+	: $((TESTS_BY_GROUP[${GNAME}]++))
 	local TEST_NUMBER="$(formatTestNumber "${TESTID}")"
 	echo "Generating test ${TEST_NUMBER}"
 	local IN_FILE="${TEST_NUMBER}"
@@ -112,9 +118,16 @@ function makeUnpackTest {
 		rm -f tmp.txt
 	else
 		rm -f tmp.txt
-		echo "Unarchiving error"
+		echo "Unarchiving error while trying to extract \"${FILE_NAME}\" from \"${ZIP_NAME}\""
 		exit 3
 	fi
+}
+
+function makeUnpackMany {
+	local ZIP_NAME="$1"; shift
+	for FILE in "$@"; do
+		makeUnpackTest "${ZIP_NAME}" "${FILE}"
+	done
 }
 
 function makeTestSeries {
@@ -127,7 +140,7 @@ function makeTestSeries {
 # Aliases
 function tcat { makeTest; }
 function tgen { makeGenTest "$@"; }
-function tzip { makeUnpackTest "$@"; }
+function tzip { makeUnpackMany "$@"; }
 function tmany { makeTestSeries "$@"; }
 function group { GROUP="$1"; }
 
@@ -140,9 +153,29 @@ function prepare {
 	)
 	TESTID=0
 	declare -gA GEN_PARAMS
+	declare -gA TESTS_BY_GROUP
+}
+
+function finish {
+	(
+		echo "Testest \"${TESTSET}\" generated."
+		local -a GRNAMES
+		mapfile -t GRNAMES <<<"$(printf '%s\n' "${!TESTS_BY_GROUP[@]}" | LC_COLLATE=C sort -n)"
+		for GNAME in "${GRNAMES[@]}"; do
+			[[ -z "${GNAME}" ]] && continue
+			if [[ "${GNAME}" == "__no_group__5e07b367" ]]; then
+				echo "  - ungrouped: ${TESTS_BY_GROUP[${GNAME}]}"
+			else
+				echo "  - group ${GNAME}: ${TESTS_BY_GROUP[${GNAME}]}"
+			fi
+		done
+		echo
+	) >>../gen-tests.target 
 }
 
 . genTests.sh
+
+: >gen-tests.target
 
 # Pretests
 echo "Generating pretests..."
@@ -153,6 +186,7 @@ echo "Generating pretests..."
 	GROUP=''
 	prepare
 	runPretestGen
+	finish
 ) || exit "$?"
 
 # Tests
@@ -164,4 +198,5 @@ echo "Generating tests..."
 	GROUP=''
 	prepare
 	runTestGen
+	finish
 ) || exit "$?"

@@ -7,7 +7,8 @@ fields:
     "scoreType": Type of scoring
         * "subtask": Scoring by subtasks  
             - "subtasks":
-              Has format [ [score1, test1], [score2, test2], ... ]
-              E.g.: [ [40, 2], [60, 2] ]
+              Has format [ [score1, test1, [depends1]], [score2, test2, [depends2]], ... ]
+              [depends] fields are optional
+              E.g.: [ [40, 2], [20, 2], [40, 2, [1, 2]] ]
         * "byTest": Scoring by tests
             - "cost": Cost of single tests (e.g.: 5)

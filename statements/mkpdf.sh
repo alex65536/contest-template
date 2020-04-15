@@ -13,15 +13,15 @@ TMP_FILE="mkpdfbuild${RANDOM}${RANDOM}"
 DEST_PDF="$1"
 shift
 
-INCLUDES=""
+INFILES=""
 
 for INFILE in "$@"; do
-    INCLUDES+="\\input{${INFILE}.tex} "
+    INFILES+="$(./mkpdf_helper.py "$INFILE")"$'\n'
 done
 
-echo "$INCLUDES"
+echo "$INFILES"
 
-m4 -D_contestname="${CONTEST_NAME}" -D_contestdate="${CONTEST_DATE}" -D_contestlocation="${CONTEST_LOCATION}" -D_includes="${INCLUDES}" "${TEMPLATE_FILE}" >"${TMP_FILE}.tex"
+m4 -D_contestname="${CONTEST_NAME}" -D_contestdate="${CONTEST_DATE}" -D_contestlocation="${CONTEST_LOCATION}" -D_infiles="${INFILES}" "${TEMPLATE_FILE}" >"${TMP_FILE}.tex"
 
 if latexmk --pdflatex="pdflatex --file-line-error-style %O %S" -pdf "${TMP_FILE}.tex"; then
     mv -T "${TMP_FILE}.pdf" "${DEST_PDF}.pdf"
