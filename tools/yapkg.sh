@@ -12,9 +12,12 @@ make prepare
 )
 
 tools/ya_prepare.sh normal
-(
-	cd problems/"$1" || exit
-	rm ../"$1.zip"
-	zip -r ../"$1.zip" *
-)
+while [[ $# != 0 ]]; do
+	(
+		cd problems/"$1" || exit
+		rm ../"$1.zip"
+		zip -r ../"$1.zip" *
+	)
+	shift
+done
 tools/ya_prepare.sh inverse
