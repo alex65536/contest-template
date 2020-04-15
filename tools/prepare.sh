@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function processDir {
 	echo "$1" >> ../problem-list.txt

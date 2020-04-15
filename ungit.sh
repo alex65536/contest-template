@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Makes a normal contest template from the GitHub's version of it
 

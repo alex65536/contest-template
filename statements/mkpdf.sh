@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 jq . ../contest.json >/dev/null || exit
 

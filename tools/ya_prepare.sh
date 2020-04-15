@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/usr/bin/env bash
 # Temporary, ugly hack to help uploading to Yandex.Contest
 # It switches usual test naming (*.in/*.out) to Ya-Contest acceptable (*/*.a)
 # and vise versa. When (and if) (*/*.a) will be accepted as default, this script
