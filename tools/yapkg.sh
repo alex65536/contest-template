@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ $# != 1 ]]; then
+if [[ $# == 0 ]]; then
 	echo "Usage yapkg.sh PROBLEMS..."
 	exit 1
 fi
